@@ -14,15 +14,27 @@ public class RemoveMissingScripts
     {
         GameObject[] _go = Selection.gameObjects;
 
+        int _count = _go.Length;
+        int _cur = 0;
+
         foreach (GameObject _gameObject in _go)
         {
             FindInGO(_gameObject);
+
+            _cur++;
+
+            EditorUtility.DisplayCancelableProgressBar("Processing...", $"{(_cur + 1)}/{_count}", (float)_cur / _count);
         }
+
+        EditorUtility.ClearProgressBar();
     }
 
     private static void FindAll()
     {
         string[] _assetsPaths = AssetDatabase.GetAllAssetPaths();
+
+        int _count = _assetsPaths.Length;
+        int _cur = 0;
 
         foreach (string _assetPath in _assetsPaths)
         {
@@ -38,7 +50,13 @@ public class RemoveMissingScripts
                     }
                 }
             }
+
+            _cur++;
+
+            EditorUtility.DisplayCancelableProgressBar("Processing...", $"{(_cur + 1)}/{_count}", (float)_cur / _count);
         }
+
+        EditorUtility.ClearProgressBar();
     }
 
     public static Object[] LoadAllAssetsAtPath(string assetPath)
@@ -58,20 +76,9 @@ public class RemoveMissingScripts
         {
             if (_components[i] == null)
             {
-                string _name = _gameObject.name;
-                Transform _transform = _gameObject.transform;
+                _flag = true;
 
-                while (_transform.parent != null)
-                {
-                    Transform _parent = _transform.parent;
-                    _name = _parent.name + "/" + _name;
-                    _transform = _parent;
-                }
-
-                if (!_flag)
-                {
-                    _flag = true;
-                }
+                break;
             }
         }
 
